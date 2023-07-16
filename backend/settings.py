@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-98mosm_t(vqeatl&3mq4_)n)0poeb=^47a3&yh7+dbv1_$y3bw
 
 DEBUG = True
 
-# ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*"]
 
 
 
