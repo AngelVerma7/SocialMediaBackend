@@ -10,5 +10,6 @@ urlpatterns = [
     path("profile/",include("userprofile.urls")),
     path("feeds/",include("feeds.urls")),
     path("comments/",include("comments.urls")),
+    path("follow/",include("follow.urls")),
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT )
 

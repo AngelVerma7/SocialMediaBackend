@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'userLogin',
     'userprofile',
     'feeds',
-    'comments'
+    'comments',
+    'follow',
 
 
 ]
