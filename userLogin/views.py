@@ -69,9 +69,14 @@ class OTPView(APIView):
             sendMail(email,otp)
 
             data={"email":email,"otp":otp}
-            serializer=OTPSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
+            otpObj=OTP.objects.filter(email=email).first()
+            if otpObj:
+                otpObj.otp=otp
+                otpObj.save()
+            else:
+                serializer=OTPSerializer(data=data)
+                if serializer.is_valid():
+                    serializer.save()
         except:
             print("nahi hua")
             return Response({"message":"Email is unvalid or try after sometime"},status=status.HTTP_400_BAD_REQUEST)
