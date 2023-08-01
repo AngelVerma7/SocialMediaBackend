@@ -36,8 +36,8 @@ from rest_framework_simplejwt.views import(
 
 
 def sendMail(email_receiver,otp):
-    email_sender="yourmail@gmail.com"
-    email_password='16digitspassword'
+    email_sender="ashutoshsinghas2409@gmail.com"
+    email_password='ueflvrqkwtmeggbo'
     subject="OTP generation"
     body="Your otp for registration is "+str(otp)
     em=EmailMessage()
@@ -46,11 +46,14 @@ def sendMail(email_receiver,otp):
     em['Subject']=subject
     em.set_content(body)
     context=ssl.create_default_context()
+    print("Hiii")
     with smtplib.SMTP_SSL('smtp.gmail.com',465,context=context) as smtp:
         smtp.login(email_sender,email_password)
         smtp.sendmail(email_sender,email_receiver,em.as_string())
 
-    
+
+
+
 class OTPView(APIView):
     def post(self,request):
         if "email" in request.data:
@@ -64,10 +67,13 @@ class OTPView(APIView):
         #Scope : after a fix time otp can be resend
         try:
             sendMail(email,otp)
+
             data={"email":email,"otp":otp}
             serializer=OTPSerializer(data=data)
-            serializer.save()
+            if serializer.is_valid():
+                serializer.save()
         except:
+            print("nahi hua")
             return Response({"message":"Email is unvalid or try after sometime"},status=status.HTTP_400_BAD_REQUEST)
         return Response({"otp":otp})
 
