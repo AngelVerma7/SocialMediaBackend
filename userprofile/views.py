@@ -68,8 +68,12 @@ class UserFeeds(APIView):
     def get(self,request):
         Response(status=status.HTTP_300_MULTIPLE_CHOICES)
     def post(self,request):
-        if "username" not in request.data: 
+        if "username" not in request.data : 
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+        page=0
+        if "page" in request.data:
+            page=request.data["page"]
+        pagesize=13
         user=User.objects.filter(username=request.data["username"]).first()
         
         if not user:
@@ -78,6 +82,22 @@ class UserFeeds(APIView):
         if not profile:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
         feeds=Feed.objects.filter(feeduser=profile)
+            #    feeds = Feed.objects.all()
+        maxpage = int((len(feeds) / pagesize )+ (1 if len(feeds) % pagesize else 0))
+        print("the maxpage is",maxpage)
+        print("the page is",page)
+        if(page >=maxpage):
+            return Response({"remaining feeds are":0,"feeds":[]})
+        page = int(page % maxpage)
+        objs = feeds[(page) * pagesize : min(len(feeds), (page + 1) * pagesize)]
+        serializer = FeedSerializer(objs, many=True)
+        res=dict()
+        if page==maxpage-1:
+            res["remaining"]=0
+        else:
+            res["remaining"]=1
+        res["feeds"]=serializer.data    
+        return Response(res)
             
 
         # feeds=Feed.objects.filter(feeduser=request.data["username"])

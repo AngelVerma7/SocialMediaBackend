@@ -141,8 +141,8 @@ class UpdateFeedView(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         if "desc" in request.data:
             myfeed.desc = request.data["desc"]
-        if "avatar" in request.data:
-            myfeed.avatar = request.data["avatar"]
+        # if "avatar" in request.data:
+        #     myfeed.avatar = request.data["avatar"]
         if "link" in request.data:
             myfeed.link = request.data["link"]
         myfeed.save()
