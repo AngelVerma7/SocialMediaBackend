@@ -33,6 +33,8 @@ class MyFeedView(APIView):
     authentication_classes = [JWTAuthentication]
 
     def post(self, request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         user = request.user
         obj = Feed.objects.filter(feeduser=user)
         print(obj)
@@ -44,6 +46,8 @@ class LikeFeedView(APIView):
     authentication_classes = [JWTAuthentication]
 
     def post(self, request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)        
         serializer = LikeFeedSerializer(context={"request": request}, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -54,6 +58,8 @@ class UnlikeFeedView(APIView):
     authentication_classes = [JWTAuthentication]
 
     def post(self, request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         user = request.user
         if "postid" in request.data:
             obj = Like.objects.filter(
@@ -70,6 +76,8 @@ class DeleteFeedView(APIView):
     authentication_classes = [JWTAuthentication]
 
     def post(self, request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         if "postid" in request.data:
             obj = Feed.objects.filter(
                 id=request.data["postid"], feeduser=request.user
@@ -120,6 +128,8 @@ class CreateFeedView(APIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         obj = CreateFeedSerializer(context={"request": request}, data=request.data)
         print(obj)
         if obj.is_valid():
@@ -133,6 +143,8 @@ class UpdateFeedView(APIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         if "postid" not in request.data:
             return Response(status=status.HTTP_300_MULTIPLE_CHOICES)
         postid = request.data["postid"]

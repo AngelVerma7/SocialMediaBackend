@@ -52,6 +52,8 @@ class UpdateProfile(APIView):
     authentication_classes=[JWTAuthentication]
     serializer_class=ProfileUpdateSerializer
     def post(self,request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         userprofile=UserProfile.get_profile_by_user(request.user)
         if not userprofile:
             return Response(status=status.HTTP_403_FORBIDDEN)

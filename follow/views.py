@@ -36,7 +36,58 @@ class StartFollowingView(APIView):
         obj=Follow(leader=leader,follower=user)
         obj.save()
         return Response({"message":"User started following this user"},status=status.HTTP_200_OK)   
+class UnfollowView(APIView):
+    authentication_classes=[JWTAuthentication]
+    def post(self,request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        user=request.user
+        if "leader" not in request.data:
+            return Response({"message":"need leader for unfollow"})
+        obj=User.objects.filter(username=request.data["leader"]).first()
+        if not obj:
+            return Response({"message":"the leader doesn't exist"})
+        leader=obj.id
+        
+        obj=Follow.objects.filter(follower=user.id,leader=leader).first()
+        if obj:
+            print("successfully deleted")
+            obj.delete()
+        return Response()
+
+
+class FollowDegreeView(APIView):
+    authentication_classes=[JWTAuthentication]
+    def post(self,request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        user=request.user
+        if "target" not in request.data:
+            return Response({"message":"can not return degree without 'degree' "})
+        target=User.objects.filter(username=request.data["target"]).first()
+        if not target:
+            return Response({"message":"This targeted user doesn't exist"})
+        follow={user.id}
+        
+        target=target.id
+        for i in range(3):
+            following=Follow.objects.filter(follower__in=follow)
+            for item in following:
+                follow.add(item.leader.id)
+            if target in follow:
+                return Response({"degree":i+1})
+        return Response({"degree":4})
+        
         
 
+
+
+
+
+
+
+
+        
+    
         
 
