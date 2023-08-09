@@ -7,3 +7,8 @@ class Comment(models.Model):
     commentPost=models.ForeignKey(Feed,on_delete=models.CASCADE)
     entry=models.TextField()
     date=models.DateTimeField( auto_now_add=True)
+class CommentReply(models.Model):
+    commentUser=models.ForeignKey(UserProfile,  on_delete=models.CASCADE)
+    commentOn=models.ForeignKey(Comment,on_delete=models.CASCADE)
+    entry=models.TextField()
+    date=models.DateTimeField( auto_now_add=True)

@@ -47,24 +47,25 @@ class LikeFeedSerializer(serializers.ModelSerializer):
           model=Like
           fields="__all__"
 class CreateFeedSerializer(serializers.ModelSerializer):
-     avatar = serializers.ImageField(required=True)
-     feeduser= serializers.ReadOnlyField(source='creator.id')
+     # avatar = serializers.ImageField(required=True)
+     # feeduser= serializers.ReadOnlyField(source='creator.id')
      def to_internal_value(self, data):
         user = self.context['request'].user
         userProfile=UserProfile.objects.filter(profileuser=user).first()
         if not userProfile:
               return super().to_internal_value(data)
-             
+        
         if "avatar" not in data:
              return super().to_internal_value(data)
-        instance=Feed.objects.get_or_create(
-             feeduser=userProfile,
-             avatar=data["avatar"] if "avatar" in data else None,
-             desc=data["desc"] if "desc" in data else "",
-             link=data["link"] if "link" in data else "",
+        data["feeduser"]=userProfile.id
+     #    instance=Feed.objects.get_or_create(
+     #         feeduser=userProfile,
+     #         avatar=data["avatar"] if "avatar" in data else None,
+     #         desc=data["desc"] if "desc" in data else "",
+     #         link=data["link"] if "link" in data else "",
              
-                )
-        return super().to_internal_value(instance)
+     #            )
+        return super().to_internal_value(data)
      class Meta:
           model=Feed
           fields=("avatar","feeduser")

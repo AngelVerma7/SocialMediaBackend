@@ -7,6 +7,7 @@ urlpatterns = [
 
     path('all',CommentByIdView.as_view()),
     path('add',AddCommentView.as_view()),
+    path('reply',CommentReplyView.as_view()),
 
 
 ]

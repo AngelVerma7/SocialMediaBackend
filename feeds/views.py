@@ -121,9 +121,11 @@ class CreateFeedView(APIView):
 
     def post(self, request):
         obj = CreateFeedSerializer(context={"request": request}, data=request.data)
+        print(obj)
         if obj.is_valid():
             obj.save()
-        return Response()
+            return Response()
+        return Response({"message":"post is not createtd"})
 
 
 class UpdateFeedView(APIView):

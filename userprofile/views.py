@@ -73,7 +73,7 @@ class UserFeeds(APIView):
         page=0
         if "page" in request.data:
             page=request.data["page"]
-        pagesize=13
+        pagesize=10
         user=User.objects.filter(username=request.data["username"]).first()
         
         if not user:

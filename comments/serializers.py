@@ -13,7 +13,37 @@ class CommentSerializer(serializers.ModelSerializer):
         extra_fields=["username","useravatar"]
 
 class CreateCommentSerializer(serializers.ModelSerializer):
-    
      class Meta:
           model=Feed
           fields="__all__"
+
+class CommentReplySerializer(serializers.ModelSerializer):
+     def to_internal_value(self, data):
+        user = self.context['request'].user
+        userProfile=UserProfile.objects.filter(profileuser=user).first()
+        if not userProfile:
+              return super().to_internal_value(data)
+             
+        if "entry" not in data or "commentOn" not in data:
+             return super().to_internal_value(data)
+        commentOn=data["commentOn"]
+        commentOn=Comment.objects.filter(id=commentOn).first()
+        print(commentOn)
+        print(userProfile)
+        print(data["entry"])
+        if not commentOn:
+            return super().to_internal_value(data)
+        print("ye step bhi ho gya")
+     #    instance=CommentReply.objects.get_or_create(
+     #         commentUser=userProfile,
+     #         entry=data["entry"],
+     #         commentOn=commentOn
+     #    )
+        data["commentOn"]=commentOn.id
+        data["commentUser"]=userProfile.id
+        print(data)
+        return super().to_internal_value(data)
+
+     class Meta:
+        model=CommentReply
+        fields=("entry","commentOn","commentUser")
