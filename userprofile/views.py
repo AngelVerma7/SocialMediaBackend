@@ -5,7 +5,7 @@ from rest_framework.parsers import MultiPartParser
 
 from .models import *
 from .serializers import *
-
+from django.contrib.auth.models import User
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -20,6 +20,28 @@ from feeds.models import *
 from feeds.serializers import * 
 
 
+class SearchUserView(APIView):
+    def post(self,request):
+        searchKey=""
+        if "username" in request.data:
+            searchKey=request.data["username"]
+        else:
+            return Response()
+        matched=User.objects.filter(username__contains=searchKey)
+        print(matched)
+        if len(matched)>5:
+            matched=matched[:5]
+        st=set()
+        for i in matched:
+            st.add(i.id)
+        res=UserProfile.objects.filter(profileuser__in=st)
+        serializer=UserProfileSerializer(res,many=True)
+        
+        return Response(serializer.data)
+    
+
+
+    
 class ProfileView(APIView):
     serializer_class=UserProfileSerializer
     def get(self,request,username):
