@@ -100,6 +100,69 @@ class CommentReplyView(APIView):
             return Response()
         return Response({"message":"not a valid serializer"})
         return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+# class DeleteCommentReplyView(APIView):
+#     authentication_classes=[JWTAuthentication]
+#     def post(self,request):
+#         if request.user.is_anonymous:
+#             return Response(status=status.HTTP_401_UNAUTHORIZED)
+#         userprofile=UserProfile.objects.filter(profileuser=request.user).first()
+#         if not userprofile:
+#             return Response({"message":"no such user exist"})
+#         if "replyId" not in request:
+#             return Response({"message":"please include replyId"})
+#         replyId=request.data["replyId"]
+#         obj=CommentReply.objects.filter(id=obj,commentUser=userprofile).first()
+#         if obj:
+#             obj.delete()
+#             return Response({"message":"comment reply deleted successfully"})
+        
+#         return Response({"message":"no such comment exist"})
+    
+# class LikeCommentView(APIView):
+#        authentication_classes=[JWTAuthentication]
+#        def post(self,request):
+#         if request.user.is_anonymous:
+#             return Response(status=status.HTTP_401_UNAUTHORIZED)
+#         user=request.user
+#         userprofile=UserProfile.objects.filter(profileuser=user).first()
+#         if not userprofile:
+#             return Response({"message":"no such user exist"})
+#         if "commentId" not in request:
+#             return Response({"message":"please include replyId"})
+#         comment=Comment.objects.filter(id=request.data["commentId"]).first()
+#         if not comment:
+#             return Response({"message":"no such comment exist"})
+#         obj=CommentLike(commentUser=user,likeOn=comment)
+#         obj.save()
+#         return Response()
+    
+# class UnlikeCommentView(APIView):
+#     authentication_classes=[JWTAuthentication]
+#     def post(self,request):
+#         if request.user.is_anonymous:
+#             return Response(status=status.HTTP_401_UNAUTHORIZED)
+#         user=request.user
+#         userprofile=UserProfile.objects.filter(profileuser=user).first()
+#         if not userprofile:
+#             return Response({"message":"no such user exist"})
+#         if "commentId" not in request:
+#             return Response({"message":"please include replyId"})
+#         commentReply=CommentReply.objects.filter(commentUser=user,likeOn=request.data["commentId"]).first()
+#         if not commentReply:
+#             return Response({"message":"you haven't liked this comment"})
+#         commentReply.delete()
+#         return Response({"messag":"successfully unlike the comment"})
+
+    
+    
+
+    
+
+      
+
+          
+
 
 
 

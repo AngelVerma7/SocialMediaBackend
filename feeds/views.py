@@ -109,7 +109,7 @@ class FeedPagesView(APIView):
         if "page" in request.data:
             page = int(request.data["page"])
         print("the page is",page)
-        feeds = Feed.objects.all()
+        feeds = Feed.objects.all().order_by("-datecreated")
         maxpage = int(len(feeds) / pagesize + (1 if len(feeds) % pagesize else 0))
         page = int(page % maxpage)
         objs = feeds[(page) * pagesize : min(len(feeds), (page + 1) * pagesize)]
@@ -135,7 +135,7 @@ class CreateFeedView(APIView):
         if obj.is_valid():
             obj.save()
             return Response()
-        return Response({"message":"post is not createtd"})
+        return Response({"message":"post is not created"})
 
 
 class UpdateFeedView(APIView):

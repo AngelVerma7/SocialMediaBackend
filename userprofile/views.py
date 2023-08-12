@@ -27,6 +27,9 @@ class SearchUserView(APIView):
             searchKey=request.data["username"]
         else:
             return Response()
+        if searchKey=="":
+            return Response([])
+        
         matched=User.objects.filter(username__contains=searchKey)
         print(matched)
         if len(matched)>5:
@@ -38,6 +41,40 @@ class SearchUserView(APIView):
         serializer=UserProfileSerializer(res,many=True)
         
         return Response(serializer.data)
+    
+class SearchPageUserView(APIView):
+    def post(self,request):
+        searchKey=""
+        if "username" in request.data :
+            searchKey=request.data["username"]
+        else:
+            return Response()
+        page=0
+        if "page" in request.data:
+            page=request.data["page"]
+        if searchKey=="":
+            return Response([])
+        
+        matched=User.objects.filter(username__contains=searchKey)
+        pagesize=4
+        maxpage = int(len(matched) / pagesize + (1 if len(matched) % pagesize else 0))
+        if(page >=maxpage):
+            return Response({"remaining feeds are":0,"feeds":[]})
+        page = int(page % maxpage)
+        objs = matched[(page) * pagesize : min(len(matched), (page + 1) * pagesize)]
+        st=set()
+        for i in objs:
+            st.add(i.id)
+        res=UserProfile.objects.filter(profileuser__in=st)
+        serializer=UserProfileSerializer(res,many=True)
+        res=dict()
+        if page==maxpage-1:
+            res["remaining"]=0
+        else:
+            res["remaining"]=1
+        res["pages"]=maxpage
+        res["feeds"]=serializer.data    
+        return Response(res)
     
 
 
@@ -105,7 +142,7 @@ class UserFeeds(APIView):
         profile=UserProfile.objects.filter(profileuser=user).first()
         if not profile:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-        feeds=Feed.objects.filter(feeduser=profile)
+        feeds=Feed.objects.filter(feeduser=profile).order_by("-edited")
             #    feeds = Feed.objects.all()
         maxpage = int((len(feeds) / pagesize )+ (1 if len(feeds) % pagesize else 0))
         print("the maxpage is",maxpage)

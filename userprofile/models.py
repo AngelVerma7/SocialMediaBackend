@@ -10,6 +10,7 @@ class UserProfile(models.Model):
         if(len(obj)):
             return obj[0]
         return None
-
+    def __str__(self):
+        return self.profileuser.username
 
 
