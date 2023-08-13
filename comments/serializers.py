@@ -7,6 +7,21 @@ from comments.models import *
 class CommentSerializer(serializers.ModelSerializer):
     username = serializers.CharField(read_only=True, source="commentUser.profileuser.username")
     avatar = serializers.CharField(read_only=True, source="commentUser.avatar")
+    def to_representation(self, instance):
+            representation = super().to_representation(instance)
+            # feeduser=representation['feeduser']
+            # feedpost=representation['id']
+            # print(feeduser)
+            # likes=Like.objects.filter(likedpost=feedpost).count()
+            # representation["likes"]=likes
+
+
+            # comments=Comment.objects.filter(commentPost=feedpost).count()
+            likes=CommentLike.objects.filter(likeOn=representation["id"]).count()
+            replies=CommentReply.objects.filter(commentOn=representation["id"]).count()
+            representation["likes"]=likes
+            representation["replies"]=replies
+            return  representation
     class Meta:
         model=Comment
         fields="__all__"
@@ -47,3 +62,7 @@ class CommentReplySerializer(serializers.ModelSerializer):
      class Meta:
         model=CommentReply
         fields=("entry","commentOn","commentUser")
+class CommentReplyViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=CommentReply
+        fields="__all__"
