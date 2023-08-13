@@ -107,6 +107,7 @@ class CommentReplyView(APIView):
         else:
             res["remaining"]=1
         res["commentsReply"]=serializer.data    
+        print(serializer)
         return Response(res)
 
 

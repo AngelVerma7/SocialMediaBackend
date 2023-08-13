@@ -33,7 +33,8 @@ class CreateCommentSerializer(serializers.ModelSerializer):
           fields="__all__"
 
 class CommentReplySerializer(serializers.ModelSerializer):
-     def to_internal_value(self, data):
+ 
+    def to_internal_value(self, data):
         user = self.context['request'].user
         userProfile=UserProfile.objects.filter(profileuser=user).first()
         if not userProfile:
@@ -59,10 +60,15 @@ class CommentReplySerializer(serializers.ModelSerializer):
         print(data)
         return super().to_internal_value(data)
 
-     class Meta:
+    class Meta:
         model=CommentReply
         fields=("entry","commentOn","commentUser")
+        
+        
 class CommentReplyViewSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(read_only=True, source="commentUser.profileuser.username")
+    avatar = serializers.CharField(read_only=True, source="commentUser.avatar")
     class Meta:
         model=CommentReply
         fields="__all__"
+        extra_fields=["username","useravatar"]
