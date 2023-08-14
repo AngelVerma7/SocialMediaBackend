@@ -54,7 +54,8 @@ class AddCommentView(APIView):
         if request.user.is_anonymous:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         userprofile=UserProfile.get_profile_by_user(request.user)
-        
+        if not userprofile:
+            return Response({"message":"Not the app"})
 
         if "commentPost" not in request.data or "entry" not in request.data:
             return Response(status=status.HTTP_302_FOUND)
