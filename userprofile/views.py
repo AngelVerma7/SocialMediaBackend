@@ -102,7 +102,7 @@ class ProfileView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         userobj=UserProfile.get_profile_by_user(userobj)
         if userobj:
-            userData=UserProfileSerializer(userobj) 
+            userData=UserProfileSerializer(userobj,context={"request":request}) 
             return Response(userData.data)
         return Response(status=status.HTTP_403_FORBIDDEN)
 
