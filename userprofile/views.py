@@ -81,6 +81,7 @@ class SearchPageUserView(APIView):
     
 class ProfileView(APIView):
     serializer_class=UserProfileSerializer
+    authentication_classes=[JWTAuthentication]
     def get(self,request,username):
         userobj=User.objects.filter(username=username).first()
         if not userobj:
@@ -94,6 +95,8 @@ class ProfileView(APIView):
 
 
     def post(self,request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         if "username" not in request.data: 
             return Response(status=status.HTTP_300_MULTIPLE_CHOICES)
         username=request.data["username"]

@@ -15,7 +15,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         representation["follower"]=follower
         leader=Follow.objects.filter(leader=representation['userId'])
         representation["leader"]=len(leader)
-        feeds=Feed.objects.filter(feeduser=representation['userId']).count()
+        feeds=Feed.objects.filter(feeduser=representation['id']).count()
+        print(feeds)
         representation["feeds"]=feeds
         user = self.context['request'].user
         isFollowing=Follow.objects.filter(follower=representation['userId'],leader=user).count()
