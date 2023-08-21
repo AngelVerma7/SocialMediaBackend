@@ -21,7 +21,11 @@ from feeds.serializers import *
 
 
 class SearchUserView(APIView):
+    # authentication_classes=[JWTAuthentication]
     def post(self,request):
+        # if request.user.is_anonymous:
+        #     return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
         searchKey=""
         if "username" in request.data:
             searchKey=request.data["username"]
@@ -105,7 +109,7 @@ class ProfileView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         userobj=UserProfile.get_profile_by_user(userobj)
         if userobj:
-            userData=UserProfileSerializer(userobj,context={"request":request}) 
+            userData=UserProfileDetailSerializer(userobj,context={"request":request}) 
             return Response(userData.data)
         return Response(status=status.HTTP_403_FORBIDDEN)
 
