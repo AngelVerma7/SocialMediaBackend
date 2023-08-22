@@ -43,17 +43,19 @@ class UnfollowView(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         user=request.user
         if "leader" not in request.data:
-            return Response({"message":"need leader for unfollow"})
+            return Response({"message":"need leader for unfollow"},status=status.HTTP_400_BAD_REQUEST)
         obj=User.objects.filter(username=request.data["leader"]).first()
         if not obj:
-            return Response({"message":"the leader doesn't exist"})
+            return Response({"message":"the leader doesn't exist"},status=status.HTTP_400_BAD_REQUEST)
         leader=obj.id
         
         obj=Follow.objects.filter(follower=user.id,leader=leader).first()
         if obj:
             print("successfully deleted")
             obj.delete()
-        return Response()
+            print("ho gya delete")
+            return Response()
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class FollowDegreeView(APIView):
@@ -78,7 +80,22 @@ class FollowDegreeView(APIView):
                 return Response({"degree":i+1})
         return Response({"degree":4})
         
-        
+def followDegreeFun(request,target:int):
+    user=request.user
+    # target=User.objects.filter(username=target).first()
+    # if not target:
+        # return 4
+    follow={user.id}        
+    # target=id
+    target=int(target)
+    for i in range(3):
+        following=Follow.objects.filter(follower__in=follow)
+        for item in following:
+            follow.add(item.leader.id)
+        if target in follow:
+            return i+1
+    return 4
+
 
 
 

@@ -3,6 +3,7 @@ from .models import *
 from django.contrib.auth.models import User
 from feeds.models import *
 from follow.models import *
+from follow.views import *
 
 class UserProfileSerializer(serializers.ModelSerializer):
     username= serializers.CharField(read_only=True, source="profileuser.username")
@@ -50,12 +51,14 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
         print(feeds)
         representation["feeds"]=feeds
         user = self.context['request'].user
-        isFollowing=Follow.objects.filter(follower=representation['userId'],leader=user).count()
+        isFollowing=Follow.objects.filter(follower=user,leader=representation['userId']).count()
         representation["isFollowing"]=isFollowing
         isMe=0
         if str(user.id)==str(representation["userId"]):
             isMe=1
         representation["isMe"]=isMe
+        degree=followDegreeFun( self.context['request'],target=representation["userId"])
+        representation["degree"]=degree
 
         
 
