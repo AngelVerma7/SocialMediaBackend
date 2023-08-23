@@ -128,6 +128,7 @@ class CreateFeedView(APIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
+        print(request.data)
         if request.user.is_anonymous:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         obj = CreateFeedSerializer(context={"request": request}, data=request.data)

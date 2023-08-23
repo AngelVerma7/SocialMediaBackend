@@ -58,6 +58,10 @@ class CreateFeedSerializer(serializers.ModelSerializer):
         if "avatar" not in data:
              return super().to_internal_value(data)
         data["feeduser"]=userProfile.id
+        print(data)
+     #    if "desc" in self.request.data:
+             
+             
      #    instance=Feed.objects.get_or_create(
      #         feeduser=userProfile,
      #         avatar=data["avatar"] if "avatar" in data else None,
@@ -68,5 +72,5 @@ class CreateFeedSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
      class Meta:
           model=Feed
-          fields=("avatar","feeduser")
+          fields=("avatar","feeduser","desc")
 
