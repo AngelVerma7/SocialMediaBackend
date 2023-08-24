@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 class UserProfile(models.Model):
-    profileuser=models.ForeignKey("auth.User",  on_delete=models.CASCADE)
+    profileuser=models.ForeignKey(User,  on_delete=models.CASCADE)
     desc=models.TextField()
     avatar=models.ImageField( upload_to='media/profile', height_field=None, width_field=None, max_length=None)
     link=models.TextField()

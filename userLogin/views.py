@@ -113,7 +113,7 @@ class CreateUserView(APIView):
             userobj.save()
             profileObj=UserProfile(profileuser=userobj)
             profileObj.save()
-            return Response()
+            return Response({"message":"balle balle"})
         else :
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
