@@ -20,12 +20,14 @@ from userLogin.serializers import *
 
 
 class FeedView(APIView):
-    def get(self, request, postid):
+    authentication_classes=[JWTAuthentication]
+    def post(self, request, postid):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         obj = Feed.objects.filter(id=postid).first()
         if not obj:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-        serializer = FeedSerializer(obj)
-
+        serializer = FeedSerializer(obj,context={"request": request})
         return Response(serializer.data)
 
 
