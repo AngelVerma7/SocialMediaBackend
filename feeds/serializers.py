@@ -16,10 +16,11 @@ class FeedSerializer(serializers.ModelSerializer):
             feeduser=representation['feeduser']
             feedpost=representation['id']
             print(feeduser)
-            is_liked=Like.objects.filter(likedby=self.context['request'].user,likedpost=feedpost).first()
-          #   print(representation["userid"])
-            print(Like.objects.filter(likedby=self.context['request'].user,likedpost=feedpost))
-            representation["isLiked"]=1 if is_liked else 0
+            is_liked=-1
+            representation["is_liked"]=-1
+            if self.context and not self.context["request"].user.is_anonymous:
+                  is_liked=Like.objects.filter(likedby=self.context['request'].user,likedpost=feedpost).first()
+                  representation["isLiked"]=1 if is_liked else 0
             likes=Like.objects.filter(likedpost=feedpost).count()
             representation["likes"]=likes
 

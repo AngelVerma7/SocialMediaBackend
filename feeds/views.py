@@ -22,6 +22,8 @@ from userLogin.serializers import *
 class FeedView(APIView):
     authentication_classes=[JWTAuthentication]
     def post(self, request, postid):
+        print(request)
+        print(request.user)
         if request.user.is_anonymous:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         obj = Feed.objects.filter(id=postid).first()
@@ -104,7 +106,10 @@ class FeedPagesView(APIView):
         objs = feeds[(page) * pagesize : min(len(feeds), (page + 1) * pagesize)]
         serializer = FeedSerializer(objs, many=True)
         return Response(serializer.data)
+    # authentication_classes=[JWTAuthentication]
     def post(self, request):
+        # if request.user.is_anonymous:
+            # return Response(status=status.HTTP_401_UNAUTHORIZED)
         # print(request.GET)
         pagesize = 5
         page = 0
@@ -115,7 +120,7 @@ class FeedPagesView(APIView):
         maxpage = int(len(feeds) / pagesize + (1 if len(feeds) % pagesize else 0))
         page = int(page % maxpage)
         objs = feeds[(page) * pagesize : min(len(feeds), (page + 1) * pagesize)]
-        serializer = FeedSerializer(objs, many=True)
+        serializer = FeedSerializer(objs, many=True,context={"request":request})
         return Response(serializer.data)
 
 
