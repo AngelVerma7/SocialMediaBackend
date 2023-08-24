@@ -4,11 +4,11 @@ from django.contrib.auth.models import User
 from comments.models import * 
 
 class FeedSerializer(serializers.ModelSerializer):
-     desc= serializers.CharField(read_only=True, source="feeduser.desc")
+     userdesc= serializers.CharField(read_only=True, source="feeduser.desc")
      username= serializers.CharField(read_only=True, source="feeduser.profileuser.username")
      firstname= serializers.CharField(read_only=True, source="feeduser.profileuser.first_name")
      lastname= serializers.CharField(read_only=True, source="feeduser.profileuser.last_name")
-     desc= serializers.CharField(read_only=True, source="feeduser.desc")
+     # desc= serializers.CharField(read_only=True, source="feeduser.desc")
      useravatar= serializers.CharField(read_only=True, source="feeduser.avatar")
  
      def to_representation(self, instance):
@@ -31,9 +31,9 @@ class FeedSerializer(serializers.ModelSerializer):
      class Meta:
         model=Feed
         fields="__all__"
-        extra_fields = ['desc',"username",
+        extra_fields = ["username",
                         'first_name','last_name'
-                        'useravatar','desc',
+                        'useravatar','userdesc',
                         ]
 class LikeFeedSerializer(serializers.ModelSerializer):
      def to_internal_value(self, data):
