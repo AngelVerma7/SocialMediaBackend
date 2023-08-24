@@ -76,7 +76,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=UserProfile
-        fields=("desc","first_name","last_name")
+        fields=("desc","first_name","last_name","avatar")
         extra_fields = ['first_name','last_name']
         depth=1
 
