@@ -2,8 +2,10 @@ from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
-
+from userprofile.models import UserProfile
+from userprofile.serializers import *
 from .models import *
+
 # from .serializers import *
 
 
@@ -95,6 +97,26 @@ def followDegreeFun(request,target:int):
         if target in follow:
             return i+1
     return 4
+class RecentFollowersView(APIView):
+    authentication_classes=[JWTAuthentication]
+    def post(self,request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        obj=Follow.objects.filter(leader=request.user)[:5]
+        ids={i.follower for i in obj }
+        following=UserProfile.objects.filter(profileuser__in=ids)
+        serializer=UserProfileSerializer(following,many=True)
+        return Response(serializer.data)
+class RecentFollowingsView(APIView):
+    authentication_classes=[JWTAuthentication]
+    def post(self,request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        obj=Follow.objects.filter(follower=request.user)[:5]
+        ids={i.leader for i in obj }
+        following=UserProfile.objects.filter(profileuser__in=ids)
+        serializer=UserProfileSerializer(following,many=True)
+        return Response(serializer.data)
 
 
 

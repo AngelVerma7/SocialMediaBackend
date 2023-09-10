@@ -121,14 +121,21 @@ class UpdateProfile(APIView):
         if request.user.is_anonymous:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         userprofile=UserProfile.get_profile_by_user(request.user)
+            
         if not userprofile:
             return Response(status=status.HTTP_403_FORBIDDEN)
         user=UserNameSerializer(request.user,data=request.data)
-        obj=ProfileUpdateSerializer(userprofile,data=request.data)
+        # if "isAvatar" in request.data and request.data["isAvatar"]==True:
+        #     print("full profile has been called")
+        #     obj=ProfileUpdateSerializer(userprofile,data=request.data)
+        if "avator" in request.data:
+            obj=ProfileUpdateSerializer(userprofile,data=request.data)
+        else:
+            print("half profile has been called")
+            obj=HalfProfileUpdateSerializer(userprofile,data=request.data)
         if obj.is_valid() and user.is_valid():
             obj.save()
             user.save()
-
             return Response()
         return Response(status=status.HTTP_400_BAD_REQUEST)
 

@@ -18,6 +18,7 @@ class FeedSerializer(serializers.ModelSerializer):
             print(feeduser)
             is_liked=-1
             representation["is_liked"]=-1
+            representation["isLiked"]=0
             if self.context and not self.context["request"].user.is_anonymous:
                   is_liked=Like.objects.filter(likedby=self.context['request'].user,likedpost=feedpost).first()
                   representation["isLiked"]=1 if is_liked else 0

@@ -27,7 +27,7 @@ class CommentByIdView(APIView):
             page=request.data["page"]
         pagesize=10
         postId=request.data["postId"]
-        comment=Comment.objects.filter(commentPost=postId)
+        comment=Comment.objects.filter(commentPost=postId).order_by("-date")
         maxpage = int((len(comment) / pagesize )+ (1 if len(comment) % pagesize else 0))
         data=CommentSerializer(comment,many=True)
 
