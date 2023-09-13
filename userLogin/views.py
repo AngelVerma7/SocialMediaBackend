@@ -115,7 +115,7 @@ class CreateUserView(APIView):
             profileObj.save()
             return Response({"message":"balle balle"})
         else :
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response({"message":"Something went wrong"},status=status.HTTP_406_NOT_ACCEPTABLE)
 
             
 class DeleteUserView(APIView):
